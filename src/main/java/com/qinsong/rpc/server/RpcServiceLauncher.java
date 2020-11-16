@@ -40,6 +40,7 @@ public class RpcServiceLauncher {
         this.enableQSRpc = enableQSRpc;
 
         if (iSerialize == null) iSerialize = new Protostuff();
+
         cacheResponse = new CacheResponse(iSerialize);
         if (enableQSRpc.qps() > 0) {
             rateLimiter = RateLimiter.create(enableQSRpc.qps());

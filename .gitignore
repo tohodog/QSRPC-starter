@@ -7,3 +7,5 @@ local.properties
 /logs
 /target
 /*/target
+/**/*.properties
+

@@ -23,6 +23,6 @@ public @interface QSRpcReference {
 
     String version() default "";
 
-    int timeout() default 60000;
+    int timeout() default -1;//默认60s
 
 }

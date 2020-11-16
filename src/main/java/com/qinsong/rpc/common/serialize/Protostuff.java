@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Contact github.com/tohodog
  * Date 2020/11/12
  */
-@Component
+@Component("qsrpcSerialize")
 public class Protostuff implements ISerialize {
 
     private static Map<Class<?>, Schema<?>> cachedSchema = new ConcurrentHashMap<>();

@@ -34,7 +34,7 @@ public class QSRpcPorxy implements MethodInterceptor {
 
         timeout = qsRpcReference.timeout();
         interfaceName = target.getName();
-        if (timeout <= 0) timeout = 60 * 1000;
+        if (timeout <= 0) timeout = RPCClientManager.RpcTimeout;
     }
 
     public Object getPorxy() {
