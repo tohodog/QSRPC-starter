@@ -1,8 +1,8 @@
 ![logo][logopng]
 <br/>
 <br/>
-一个基于[QSRPC][QSRPC],结合Springboot实现远程调用的轻量级RPC框架,简单高效
 ---
+一个基于[QSRPC][QSRPC],结合Springboot实现远程调用的轻量级高性能RPC框架
 <br/>
 
 [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
@@ -31,10 +31,10 @@
 </dependency>
 ``` 
 
-## Demo
+## Demo(4step)
 First configured [zookeeper](http://mirrors.hust.edu.cn/apache/zookeeper/)
 
-#### 1.application.properties
+### 1.application.properties
 ```
 #zookeeper
 qsrpc.zk.ips=127.0.0.1:2181
@@ -42,7 +42,7 @@ qsrpc.zk.ips=127.0.0.1:2181
 qsrpc.node.ip=192.168.0.100
 qsrpc.node.port=19980
 ```
-#### 2.SpringBootApplication
+### 2.SpringBootApplication
 ```
 @EnableQSRpc//add this
 @SpringBootApplication
@@ -53,13 +53,13 @@ public class RPCApplication {
 }
 ```
 
-#### 3.public api
+### 3.public api
 ```
 public interface IRPCServer {
     String hello(String name);
 }
 ```
-#### 4.1 server
+### 4.1 server
 ```
 @QSRpcService
 public class RPCServer implements IRPCServer {
@@ -94,8 +94,8 @@ public String hello() {
   * 有问题请Add [issues](https://github.com/tohodog/QSRPC-starter/issues)
   * 如果项目对你有帮助的话欢迎[![star][starsvg]][star]
   
-[logopng]: https://raw.githubusercontent.com/tohodog/QSRPC/master/logo.png
-[adpng]: https://raw.githubusercontent.com/tohodog/QSRPC/master/Architecture_diagram.jpg
+[logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
+[adpng]: https://gitee.com/sakaue/QSRPC/raw/master/Architecture_diagram.jpg
 
 [nettysvg]: https://img.shields.io/badge/netty-4.1.13-greed.svg
 [netty]: https://github.com/netty/netty
