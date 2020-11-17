@@ -27,7 +27,7 @@
 <dependency>
     <groupId>com.gitee.sakaue</groupId>
     <artifactId>QSRPC-starter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ``` 
 
@@ -108,7 +108,7 @@ public String hello() {
 [license]: https://gitee.com/sakaue/QSRPC/raw/master/LICENSE
 
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
-[star]: https://gitee.com/sakaue/QSRPC-starter
+[star]: https://gitee.com/sakaue/qsrpc-starter
 
 [QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.0-blue.svg
 [QSRPC]: https://gitee.com/sakaue/QSRPC
