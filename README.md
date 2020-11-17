@@ -104,7 +104,8 @@ public String hello() {
  
  |  CPU   | request  | time  |qps  |
  |  ----  | ----  |----  |----  |
- | i3-8100(4-core) | 10w(8-thread) | 4331ms | 23089  |
+| i3-8100(4-core/4-thread)| 10w(8-thread) | 4331ms | 23089  |
+| i7-8700(6-core/12-thread) | 30w(24-thread) | 6878ms | 43617  |
 
  
 ## Log
