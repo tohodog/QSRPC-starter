@@ -88,27 +88,28 @@ public String hello() {
  * ...
  
 ## Test
+ 4-core自发自收的情况下有2.3万的并发数,实际会更高 [Test截图][testpng]
  |  CPU   | request  | time  |qps  |
  |  ----  | ----  |----  |----  |
  | i3-8100(4-core) | 10w(8-thread) | 4331ms | 23089  |
- 4-core自发自收的情况下有2.3万的并发数,实际会更高 [Test截图][testpng]
+
  
 ## Log
 ### v1.0.0(2020-11-16)
   * open source
 ## Other
-  * 有问题请Add [issues](https://github.com/tohodog/QSRPC-starter/issues)
+  * 有问题请Add [issues](https://gitee.com/sakaue/QSRPC-starter/issues)
   * 如果项目对你有帮助的话欢迎[star][star]
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
-[testpng]: https://gitee.com/sakaue/QSRPC/raw/develop/test.png
+[testpng]: https://gitee.com/sakaue/QSRPC-starter/raw/develop/test.png
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-red.svg
-[license]: https://gitee.com/sakaue/QSRPC/raw/master/LICENSE
+[license]: https://gitee.com/sakaue/QSRPC-starter/raw/master/LICENSE
 
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
-[star]: https://gitee.com/sakaue/qsrpc-starter
+[star]: https://gitee.com/sakaue/QSRPC-starter
 
 [QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.0-blue.svg
 [QSRPC]: https://gitee.com/sakaue/QSRPC
