@@ -19,7 +19,7 @@
 ```
 <dependencies>
     <dependency>
-        <groupId>com.gitee.sakaue</groupId>
+        <groupId>com.github.tohodog</groupId>
         <artifactId>QSRPC-starter</artifactId>
         <version>0.1.0</version>
     </dependency>
