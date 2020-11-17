@@ -2,7 +2,7 @@
 <br/>
 <br/>
 ---
-一个基于[QSRPC][QSRPC],结合Springboot实现远程调用的轻量级高性能RPC框架
+一个基于[QSRPC][QSRPC],结合spring-boot实现远程调用的轻量级高性能RPC框架
 <br/>
 
 [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
@@ -36,10 +36,10 @@ First configured [zookeeper](http://mirrors.hust.edu.cn/apache/zookeeper/)
 
 ### 1.application.properties
 ```
-#zookeeper
+#zookeeper address
 qsrpc.zk.ips=127.0.0.1:2181
-#rpc server
-qsrpc.node.ip=192.168.0.100
+#rpc server address IP: WAN(8.8.8.8)/LAN(192.168.0.1)
+qsrpc.node.ip=127.0.0.1
 qsrpc.node.port=19980
 ```
 ### 2.SpringBootApplication
@@ -96,12 +96,6 @@ public String hello() {
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
 [adpng]: https://gitee.com/sakaue/QSRPC/raw/master/Architecture_diagram.jpg
-
-[nettysvg]: https://img.shields.io/badge/netty-4.1.13-greed.svg
-[netty]: https://github.com/netty/netty
-
-[zksvg]: https://img.shields.io/badge/zookeeper-3.4.10-blue.svg
-[zk]: https://github.com/apache/zookeeper
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-red.svg
