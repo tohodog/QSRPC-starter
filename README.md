@@ -25,7 +25,7 @@
 </repositories>
 
 <dependency>
-    <groupId>com.github.tohodog</groupId>
+    <groupId>com.gitee.sakaue</groupId>
     <artifactId>QSRPC-starter</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
@@ -87,22 +87,28 @@ public String hello() {
  * 断路器策略
  * ...
  
+## Test
+ |  CPU   | request  | time  |qps  |
+ |  ----  | ----  |----  |----  |
+ | i3-8100(4-core) | 10w(8-thread) | 4331ms | 23089  |
+ 4-core自发自收的情况下有2.3万的并发数,实际会更高 [Test截图][testpng]
+ 
 ## Log
 ### v1.0.0(2020-11-16)
   * open source
 ## Other
   * 有问题请Add [issues](https://github.com/tohodog/QSRPC-starter/issues)
-  * 如果项目对你有帮助的话欢迎[![star][starsvg]][star]
+  * 如果项目对你有帮助的话欢迎[star][star]
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
-[adpng]: https://gitee.com/sakaue/QSRPC/raw/master/Architecture_diagram.jpg
+[testpng]: https://gitee.com/sakaue/QSRPC/raw/develop/test.png
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-red.svg
-[license]: https://github.com/tohodog/QSVideoPlayer/blob/master/LICENSE
+[license]: https://gitee.com/sakaue/QSRPC/raw/master/LICENSE
 
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
-[star]: https://github.com/tohodog/QSRPC-starter
+[star]: https://gitee.com/sakaue/QSRPC-starter
 
 [QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.0-blue.svg
-[QSRPC]: https://github.com/tohodog/QSRPC
+[QSRPC]: https://gitee.com/sakaue/QSRPC
