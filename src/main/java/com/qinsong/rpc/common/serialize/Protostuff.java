@@ -23,6 +23,7 @@ public class Protostuff implements ISerialize {
 
     private static Objenesis objenesis = new ObjenesisStd(true);
 
+    private static ThreadLocal<LinkedBuffer> bufferThreadLocal = new ThreadLocal<>();
 
     /**
      * 序列化（对象 -> 字节数组）
@@ -31,7 +32,13 @@ public class Protostuff implements ISerialize {
     @SuppressWarnings("unchecked")
     public <T> byte[] serialize(T obj) {
         Class<T> cls = (Class<T>) obj.getClass();
-        LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
+        LinkedBuffer buffer = bufferThreadLocal.get();
+        if (buffer == null) {
+            buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
+            bufferThreadLocal.set(buffer);
+        }
+//        LinkedBuffer buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
+
         try {
             Schema<T> schema = getSchema(cls);
             return ProtostuffIOUtil.toByteArray(obj, schema, buffer);
@@ -48,8 +55,9 @@ public class Protostuff implements ISerialize {
     @Override
     public <T> T deserialize(byte[] data, Class<T> cls) {
         try {
-            T message = objenesis.newInstance(cls);
             Schema<T> schema = getSchema(cls);
+            T message = objenesis.newInstance(cls);
+//            T message = schema.newMessage();
             ProtostuffIOUtil.mergeFrom(data, message, schema);
             return message;
         } catch (Exception e) {
