@@ -12,9 +12,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.slf4j>1.7.10</version.slf4j>
-
-        <version.protostuff>1.0.9</version.protostuff>
+        <version.qsrpc>1.1.0</version.qsrpc>
+        <version.protostuff>1.7.2</version.protostuff>
         <version.objenesis>2.1</version.objenesis>
         <version.cglib>3.1</version.cglib>
         <version.guava>21.0</version.guava>
@@ -32,12 +31,12 @@
 
             <!-- Protostuff -->
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
+                <groupId>io.protostuff</groupId>
                 <artifactId>protostuff-core</artifactId>
                 <version>${version.protostuff}</version>
             </dependency>
             <dependency>
-                <groupId>com.dyuproject.protostuff</groupId>
+                <groupId>io.protostuff</groupId>
                 <artifactId>protostuff-runtime</artifactId>
                 <version>${version.protostuff}</version>
             </dependency>
@@ -65,16 +64,16 @@
         <dependency>
             <groupId>com.github.tohodog</groupId>
             <artifactId>QSRPC</artifactId>
-            <version>1.1.0</version>
+            <version>${version.qsrpc}</version>
         </dependency>
 
         <!-- Protostuff -->
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
+            <groupId>io.protostuff</groupId>
             <artifactId>protostuff-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.dyuproject.protostuff</groupId>
+            <groupId>io.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
         </dependency>
         <dependency>
