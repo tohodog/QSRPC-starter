@@ -105,8 +105,8 @@ public String hello() {
 ### v0.1.0(2020-11-16)
   * open source
 ## Other
-  * 有问题请Add [issues](https://gitee.com/sakaue/QSRPC-starter/issues)
-  * 如果项目对你有帮助的话欢迎[star][star]
+  * 有问题请Add [issues](https://github.com/tohodog/QSRPC-starter/issues)
+  * 如果项目对你有帮助的话欢迎[![star][starsvg]][star]
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
 [testpng]: https://gitee.com/sakaue/QSRPC-starter/raw/develop/test.png
@@ -116,9 +116,9 @@ public String hello() {
 [license]: https://gitee.com/sakaue/QSRPC-starter/raw/master/LICENSE
 
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
-[star]: https://gitee.com/sakaue/QSRPC-starter
+[star]: https://github.com/tohodog/QSRPC-starter
 
 [QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.1-blue.svg
-[QSRPC]: https://gitee.com/sakaue/QSRPC
+[QSRPC]: https://github.com/tohodog/QSRPC
 
 [QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.1-origen.svg
