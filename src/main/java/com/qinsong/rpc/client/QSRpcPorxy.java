@@ -21,8 +21,9 @@ public class QSRpcPorxy implements MethodInterceptor {
     private Class target; // 代理对象接口
 
     private QSRpcReference qsRpcReference;
-    private String interfaceName;
+    private String interfaceName, version;
     private int timeout;
+    private String action;//选择action
 
     private ISerialize iSerialize;
 
@@ -31,9 +32,20 @@ public class QSRpcPorxy implements MethodInterceptor {
         this.target = target;
         this.qsRpcReference = qsRpcReference;
         this.iSerialize = iSerialize;
+        //初始化数据
+        interfaceName = target.getName();
+        if (qsRpcReference.value().isEmpty()) {
+            version = qsRpcReference.version();
+        } else {
+            version = qsRpcReference.value();
+        }
+        if (qsRpcReference.ip_port().isEmpty()) {
+            action = interfaceName + qsRpcReference.value();
+        } else {
+            action = qsRpcReference.ip_port();
+        }
 
         timeout = qsRpcReference.timeout();
-        interfaceName = target.getName();
         if (timeout <= 0) timeout = RPCClientManager.RpcTimeout;
     }
 
@@ -49,16 +61,11 @@ public class QSRpcPorxy implements MethodInterceptor {
 
         Request request = new Request();
         request.setInterfaceName(interfaceName);
-        if (qsRpcReference.value().isEmpty())
-            request.setVersion(qsRpcReference.version());
-        else
-            request.setVersion(qsRpcReference.value());
+        request.setVersion(version);
         request.setMethodName(method.toString());
         request.setParameters(objects);
 
-
-        byte[] bytes = RPCClientManager.getInstance().sendSync(request.getInterfaceName() + request.getVersion(),
-                iSerialize.serialize(request), timeout);
+        byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
         Response response = iSerialize.deserialize(bytes, Response.class);
         if (response.getException() != null) {
             throw response.getException();
