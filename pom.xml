@@ -64,6 +64,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.tohodog</groupId>
             <artifactId>qsrpc</artifactId>
             <version>${version.qsrpc}</version>
@@ -90,12 +96,12 @@
 
     </dependencies>
 
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>jitpack.io</id>-->
-<!--            <url>https://jitpack.io</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <!--    <repositories>-->
+    <!--        <repository>-->
+    <!--            <id>jitpack.io</id>-->
+    <!--            <url>https://jitpack.io</url>-->
+    <!--        </repository>-->
+    <!--    </repositories>-->
 
     <licenses>
         <license>
