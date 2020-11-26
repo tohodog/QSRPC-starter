@@ -158,7 +158,7 @@ public String hello() {
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
 [star]: https://gitee.com/sakaue/QSRPC-starter
 
-[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.1-blue.svg
+[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.2-blue.svg
 [QSRPC]: https://gitee.com/sakaue/QSRPC
 
-[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.1-origen.svg
+[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.2-origen.svg
