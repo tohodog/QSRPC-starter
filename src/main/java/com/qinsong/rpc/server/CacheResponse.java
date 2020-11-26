@@ -1,5 +1,7 @@
 package com.qinsong.rpc.server;
 
+import com.qinsong.rpc.common.exp.NotFoundException;
+import com.qinsong.rpc.common.exp.UnavailableException;
 import com.qinsong.rpc.common.serialize.Response;
 import com.qinsong.rpc.common.serialize.ISerialize;
 
@@ -24,11 +26,11 @@ public class CacheResponse {
 
     private void init() {
         Response nofound = new Response();
-        nofound.setException(new Exception("nofound"));
+        nofound.setException(new NotFoundException());
         map.put("nofound", iSerialize.serialize(nofound));
 
         Response unavailable = new Response();
-        unavailable.setException(new Exception("unavailable"));
+        unavailable.setException(new UnavailableException());
         map.put("unavailable", iSerialize.serialize(unavailable));
 
         Response empty = new Response();
@@ -47,13 +49,4 @@ public class CacheResponse {
         return map.get("empty");
     }
 
-    public byte[] error(Exception e) {
-        byte[] bytes = map.get(e.toString());
-        if (bytes == null) {
-            Response err = new Response();
-            err.setException(e);
-            map.put(e.toString(), bytes = iSerialize.serialize(err));
-        }
-        return bytes;
-    }
 }

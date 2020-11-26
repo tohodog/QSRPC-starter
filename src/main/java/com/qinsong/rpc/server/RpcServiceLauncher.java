@@ -69,9 +69,17 @@ public class RpcServiceLauncher {
                 }
                 try {
                     return onHandle(message);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
-                    return cacheResponse.error(e);
+                    //获取业务抛出的异常
+                    if (e instanceof InvocationTargetException && e.getCause() != null) e = e.getCause();
+
+                    String msg = e.getMessage();
+                    if (msg == null || msg.isEmpty()) msg = e.toString();
+                    Response err = new Response();
+                    //统一返回Exception,防止客户端没有这个错误类,序列化失败
+                    err.setException(new Exception(msg));
+                    return iSerialize.serialize(err);
                 }
             }
         });

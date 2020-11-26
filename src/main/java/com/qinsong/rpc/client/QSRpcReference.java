@@ -25,4 +25,6 @@ public @interface QSRpcReference {
 
     int timeout() default -1;//默认60s
 
+    String ip_port() default "";//指定要请求的服务端127.0.0.1:8080
+
 }
