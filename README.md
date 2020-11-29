@@ -5,7 +5,7 @@
 一个基于[QSRPC][QSRPC],结合spring-boot实现远程调用的轻量级高性能RPC框架
 <br/>
 
-[![star][QSRPCstarter-svg]][star] [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
+[![starter][QSRPCstarter-svg]][star] [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
 
   * 使用zookeeper服务发现,自动注册扩展服务
   * 使用长连接TCP池,netty作为网络IO,支持全双工通信,高性能
