@@ -22,6 +22,14 @@
     <artifactId>qsrpc-starter</artifactId>
     <version>1.0.2</version>
 </dependency>
+
+<!--导入如有问题,可尝试添加jitpack源-->
+<repositories>
+  <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+  </repository>
+</repositories>
 ``` 
 
 ## Demo(4step)
