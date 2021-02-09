@@ -9,6 +9,9 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.concurrent.Future;
 
 /**
  * Created by QSong
@@ -65,12 +68,28 @@ public class QSRpcPorxy implements MethodInterceptor {
         request.setMethodName(method.toString());
         request.setParameters(objects);
 
-        byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
-        Response response = iSerialize.deserialize(bytes, Response.class);
-        if (response.getException() != null) {
-            throw response.getException();
+        Class<?> returnType = method.getReturnType();
+        if (RPCFuture.class.isAssignableFrom(returnType)) {
+            Type type = returnType.getGenericSuperclass();
+            if (!(type instanceof ParameterizedType)) {
+                type = String.class;
+            } else {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                type = parameterizedType.getRawType();
+            }
+            //异步请求
+            RPCFuture<?> rpcFuture = new RPCFuture<>(iSerialize, (Class<?>) type);
+            RPCClientManager.getInstance().sendAsync(action, iSerialize.serialize(request), rpcFuture, timeout);
+            return rpcFuture;
+        } else {
+            //同步请求
+            byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
+            Response response = iSerialize.deserialize(bytes, Response.class);
+            if (response.getException() != null) {
+                throw response.getException();
+            }
+            return response.getResult();
         }
-        return response.getResult();
     }
 
 
