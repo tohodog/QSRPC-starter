@@ -18,7 +18,8 @@ import java.lang.annotation.*;
 @Import({ServerStartListener.class
         , ClientStartListener.class
         , RpcServiceLauncher.class
-        , Protostuff.class})
+        , Protostuff.class
+        , QSRpcConfig.class})
 public @interface EnableQSRpc {
 
     boolean enabled() default true;
