@@ -7,7 +7,7 @@
 
 [![star][QSRPCstarter-svg]][star] [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
 
-  * 使用zookeeper服务发现,自动注册扩展服务
+  * 使用nacos(2.0)/zookeeper服务发现,自动注册扩展服务
   * 使用长连接TCP池,netty作为网络IO,支持全双工通信,高性能
   * 默认使用Protostuff序列化
   * 支持压缩snappy,gzip
@@ -20,26 +20,33 @@
 <dependency>
     <groupId>com.github.tohodog</groupId>
     <artifactId>qsrpc-starter</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ``` 
 
 ## Demo(4step)
-First configured [zookeeper](http://mirrors.hust.edu.cn/apache/zookeeper/)
+First configured 
+[nacos](https://nacos.io/zh-cn/docs/deployment.html)
+/
+[zookeeper](http://mirrors.hust.edu.cn/apache/zookeeper/)
 
-### 1.application.properties
+### 1.application.properties(yml)
 ```
-#zookeeper addresses
-qsrpc.zk.ips=127.0.0.1:2181
-#rpc server address
-qsrpc.node.ip=127.0.0.1 (请配置为内(外)网IP)
+#nacos 
+qsrpc.nacos.addr=192.168.0.100:8848
+
+#zookeeper 
+#qsrpc.zk.ips=127.0.0.1:2181
+
+#节点IP
+qsrpc.node.ip=127.0.0.1 (请配置为内(外)网IP,不配置自动获取)
 qsrpc.node.port=19980
 
 #option
-#请求权重 默认平均1
-qsrpc.node.weight=1
+#请求权重(1-127) 默认平均1
+#qsrpc.node.weight=1
 #压缩,带宽不足可选
-qsrpc.node.zip=snappy/gzip
+#qsrpc.node.zip=snappy/gzip
 
 ```
 ### 2.SpringBootApplication
@@ -137,6 +144,10 @@ public String hello() {
 
  
 ## Log
+### v1.0.3(2021-04-16)
+  * 支持Nacos 2.0
+  * 支持yml,自动获取node ip
+  * 其他优化...
 ### v1.0.2(2020-11-26)
   * 客户端支持选择调用指定节点
   * 异常处理优化
@@ -158,7 +169,10 @@ public String hello() {
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
 [star]: https://gitee.com/sakaue/QSRPC-starter
 
-[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.1.2-blue.svg
+[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.2.0-blue.svg
 [QSRPC]: https://gitee.com/sakaue/QSRPC
 
-[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.2-origen.svg
+[nacossvg]: https://img.shields.io/badge/nacos-2.0.0-2EBBFB.svg
+[nacos]: https://github.com/alibaba/nacos
+
+[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.3-origen.svg
