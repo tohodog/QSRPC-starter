@@ -47,7 +47,7 @@ qsrpc.nacos.addr=192.168.0.100:8848
 #qsrpc.zk.ips=127.0.0.1:2181
 
 #节点IP
-qsrpc.node.ip=127.0.0.1 (请配置为内(外)网IP,不配置自动获取)
+qsrpc.node.ip=192.168.0.100 (请配置为内(外)网IP,不配置自动获取)
 qsrpc.node.port=19980
 
 #option
