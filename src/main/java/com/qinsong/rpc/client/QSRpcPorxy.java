@@ -40,7 +40,7 @@ public class QSRpcPorxy implements MethodInterceptor {
             version = qsRpcReference.value();
         }
         if (qsRpcReference.ip_port().isEmpty()) {
-            action = interfaceName + qsRpcReference.value();
+            action = interfaceName + version;
         } else {
             action = qsRpcReference.ip_port();
         }
