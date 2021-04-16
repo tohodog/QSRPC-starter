@@ -14,7 +14,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.qsrpc>1.1.2</version.qsrpc>
+        <version.qsrpc>1.2.0</version.qsrpc>
         <version.protostuff>1.7.2</version.protostuff>
         <version.objenesis>2.1</version.objenesis>
         <version.cglib>3.1</version.cglib>
