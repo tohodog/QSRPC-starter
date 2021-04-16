@@ -8,4 +8,5 @@ local.properties
 /target
 /*/target
 /**/*.properties
+/**/*.yml
 
