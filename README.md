@@ -2,16 +2,16 @@
 <br/>
 <br/>
 ---
-一个基于[QSRPC][QSRPC],结合spring-boot实现远程调用的轻量级高性能RPC框架
+一个基于[QSRPC][QSRPC], 结合 spring-boot 实现远程调用的轻量级高性能RPC框架
 <br/>
 
 [![star][QSRPCstarter-svg]][star] [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
 
-  * 使用nacos(2.0)/zookeeper服务发现,自动注册扩展服务
-  * 使用长连接TCP池,netty作为网络IO,支持全双工通信,高性能
-  * 默认使用Protostuff序列化
-  * 支持压缩snappy,gzip
-  * 支持针对整个/单个服务进行qps限制,超时等设置
+  * 使用 nacos(2.0) / zookeeper 服务发现, 自动注册扩展服务
+  * 使用长连接TCP池, netty 作为网络IO, 支持全双工通信, 高性能
+  * 默认使用 Protostuff 序列化
+  * 支持压缩snappy, gzip
+  * 支持针对整个服务/单个接口进行qps限制, 超时等设置
   * 支持权重分发消息
   * 欢迎学习交流~
 
@@ -145,7 +145,7 @@ public String hello() {
 <br>
 　客户端Pool的maxIdle(maxActive)=服务节点配置的CPU线程数*2=服务节点netty的工作线程数,pool采用FIFO先行先出的策略,可以保证在高并发下均匀的使用tcp连接,服务端就不用再次分发消息了
 ### 3. 服务注册发现
-　分布式系统中都需要一个配置/服务中心,才能进行统一管理.本框架目前使用zookeeper(后面会支持nacos)进行服务注册,zookeeper是使用类似文件目录的结构,每个目录都可以存一个data
+　分布式系统中都需要一个配置/服务中心,才能进行统一管理.本框架目前使用zookeeper(已支持nacos)进行服务注册,zookeeper是使用类似文件目录的结构,每个目录都可以存一个data
 <br>　节点注册是使用[IP:PROT_TIME]作为目录名,data存了节点的json数据,创建模式为EPHEMERAL_SEQUENTIAL(断开后会删除该目录),这样就达到了自动监听节点上下线的效果,加入时间戳是为了解决当节点快速重启时,注册了两个目录,便于进行区分处理
 <br>　客户端通过watch目录变化信息,从而获取到所有服务节点信息,同步一个副本到本地Map里(需加上读写锁),客户端就可以实现高效调用对应的服务了
 
