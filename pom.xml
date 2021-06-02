@@ -6,7 +6,7 @@
 
     <groupId>com.github.tohodog</groupId>
     <artifactId>qsrpc-starter</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <name>qsrpc-starter</name>
     <description>qsrpc-starter</description>
