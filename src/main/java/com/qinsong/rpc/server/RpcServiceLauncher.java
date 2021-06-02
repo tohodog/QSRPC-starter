@@ -7,10 +7,10 @@ import com.qinsong.rpc.common.serialize.Request;
 import com.qinsong.rpc.common.serialize.Response;
 import com.qinsong.rpc.common.serialize.ISerialize;
 import com.qinsong.rpc.common.serialize.Protostuff;
+import org.song.qsrpc.discover.NodeInfo;
 import org.song.qsrpc.receiver.MessageListener;
 import org.song.qsrpc.receiver.NodeLauncher;
 import org.song.qsrpc.receiver.NodeRegistry;
-import org.song.qsrpc.zk.NodeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
