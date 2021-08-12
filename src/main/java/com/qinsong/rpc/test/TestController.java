@@ -38,16 +38,15 @@ public class TestController {
     }
 
     private long runTest() {
-        requse = 0;
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        for (int i = 0; i < thread; i++) {
+        final CountDownLatch countDownLatch = new CountDownLatch(DEFAULT_THREAD_POOL_SIZE);
+        for (int i = 0; i < DEFAULT_THREAD_POOL_SIZE; i++) {
             EXECUTOR_SERVICE.submit(new Runnable() {
                 @Override
                 public void run() {
                     for (int i = 0; i < count; i++) {
                         irpcServer.hello("song");
-                        if (requestAdd() == len) countDownLatch.countDown();
                     }
+                    countDownLatch.countDown();
                 }
             });
         }
@@ -60,23 +59,12 @@ public class TestController {
         return len * 1000 / (System.currentTimeMillis() - t);
     }
 
-    static volatile long requse;
-    static volatile Map<Integer, Long> map = new ConcurrentHashMap<>();
-
-    private static synchronized long requestAdd() {
-        return ++requse;
-    }
-
     private static final int DEFAULT_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
 
     private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE,
             DEFAULT_THREAD_POOL_SIZE * 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(1024));
 
     private final static int count = 12500;//
-    private final static int thread = DEFAULT_THREAD_POOL_SIZE;//x个请求线程
-    private final static long len = count * thread;//总共请求
-    private final static String zip = "";//gzip snappy
-    private final static int timeout = 60_000;
-
+    private final static long len = count * DEFAULT_THREAD_POOL_SIZE;//总共请求
 
 }

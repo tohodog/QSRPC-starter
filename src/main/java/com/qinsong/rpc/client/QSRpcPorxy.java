@@ -68,6 +68,7 @@ public class QSRpcPorxy implements MethodInterceptor {
         byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
         Response response = iSerialize.deserialize(bytes, Response.class);
         if (response.getException() != null) {
+            response.getException().printStackTrace();
             throw response.getException();
         }
         return response.getResult();

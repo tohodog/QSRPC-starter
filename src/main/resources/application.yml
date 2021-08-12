@@ -3,8 +3,8 @@ server:
 
 qsrpc:
   nacos:
-    addr: 192.168.0.68:6666
+    addr: 192.168.0.68:8848
 
   node:
     ip: 127.0.0.1
-    port: 10003
+    port: 10001
