@@ -5,7 +5,19 @@ import org.song.qsrpc.send.cb.Callback;
 
 import java.util.concurrent.*;
 
-public class RPCFuture<T> implements Future<T>, Callback<byte[]> {
+public class RPCFuture<T> implements Future<T>, Callback<T> {
+
+    public static <T> RPCFuture<T> Ok(T t) {
+        RPCFuture<T> future = new RPCFuture<>();
+        future.handleResult(t);
+        return future;
+    }
+
+    public static <T> RPCFuture<T> Error(Throwable t) {
+        RPCFuture<T> future = new RPCFuture<>();
+        future.handleError(t);
+        return future;
+    }
 
     private final CountDownLatch latch = new CountDownLatch(1);
 
@@ -17,15 +29,19 @@ public class RPCFuture<T> implements Future<T>, Callback<byte[]> {
 
     private volatile Callback<T> callback = null;
 
+
+    public RPCFuture() {
+    }
+
     public RPCFuture(ISerialize iSerialize, Class<T> type) {
         this.iSerialize = iSerialize;
         this.type = type;
     }
 
-
-    public void handleResult(byte[] result) {
+    @Override
+    public void handleResult(T result) {
         try {
-            this.result = iSerialize.deserialize(result, type);
+            this.result = result;
         } catch (Exception e) {
             e.printStackTrace();
             this.error = e;
@@ -34,6 +50,7 @@ public class RPCFuture<T> implements Future<T>, Callback<byte[]> {
         setCallback(callback);
     }
 
+    @Override
     public void handleError(Throwable error) {
         this.error = error;
         this.latch.countDown();
@@ -53,7 +70,7 @@ public class RPCFuture<T> implements Future<T>, Callback<byte[]> {
         }
     }
 
-
+    @Override
     public T get() throws InterruptedException, ExecutionException {
         await();
         if (this.error != null) {
@@ -63,6 +80,7 @@ public class RPCFuture<T> implements Future<T>, Callback<byte[]> {
         }
     }
 
+    @Override
     public T get(long timeout, TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException {
         await(timeout, unit);
         if (this.error != null) {
@@ -82,14 +100,17 @@ public class RPCFuture<T> implements Future<T>, Callback<byte[]> {
         }
     }
 
+    @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return false;
     }
 
+    @Override
     public boolean isCancelled() {
         return false;
     }
 
+    @Override
     public boolean isDone() {
         return this.latch.getCount() <= 0L;
     }
