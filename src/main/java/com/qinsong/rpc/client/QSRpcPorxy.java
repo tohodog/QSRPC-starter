@@ -5,10 +5,14 @@ import com.qinsong.rpc.common.serialize.Request;
 import com.qinsong.rpc.common.serialize.Response;
 import com.qinsong.rpc.common.serialize.ISerialize;
 import org.song.qsrpc.send.RPCClientManager;
+import org.song.qsrpc.send.cb.Callback;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.concurrent.Future;
 
 /**
  * Created by QSong
@@ -65,13 +69,48 @@ public class QSRpcPorxy implements MethodInterceptor {
         request.setMethodName(method.toString());
         request.setParameters(objects);
 
-        byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
-        Response response = iSerialize.deserialize(bytes, Response.class);
-        if (response.getException() != null) {
-            response.getException().printStackTrace();
-            throw response.getException();
+        Class<?> returnType = method.getReturnType();
+        if (RPCFuture.class.isAssignableFrom(returnType)) {
+            Type type = returnType.getGenericSuperclass();
+            if (!(type instanceof ParameterizedType)) {
+                type = String.class;
+            } else {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                type = parameterizedType.getRawType();
+            }
+            //异步请求
+            final RPCFuture<Object> rpcFuture = new RPCFuture<>();
+
+            RPCClientManager.getInstance().sendAsync(action, iSerialize.serialize(request), new Callback<byte[]>() {
+                @Override
+                public void handleResult(byte[] result) {
+                    Response response = iSerialize.deserialize(result, Response.class);
+                    if (response.getException() != null) {
+                        response.getException().printStackTrace();
+                        rpcFuture.handleError(response.getException());
+
+                    }
+                    rpcFuture.handleResult(response.getResult());
+                }
+
+                @Override
+                public void handleError(Throwable error) {
+                    error.printStackTrace();
+                    rpcFuture.handleError(error);
+                }
+            }, timeout);
+
+            return rpcFuture;
+        } else {
+            //同步请求
+            byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
+            Response response = iSerialize.deserialize(bytes, Response.class);
+            if (response.getException() != null) {
+                response.getException().printStackTrace();
+                throw response.getException();
+            }
+            return response.getResult();
         }
-        return response.getResult();
     }
 
 

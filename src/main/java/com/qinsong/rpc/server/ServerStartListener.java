@@ -76,7 +76,7 @@ public class ServerStartListener implements ApplicationListener<ContextRefreshed
                     serviceName += serviceVersion;
                 }
                 RpcServiceContext rpcServiceContext = new RpcServiceContext();
-                rpcServiceContext.object = serviceBean;
+                rpcServiceContext.object = serviceBean;//TODO 待改成row,测试是否可以调用代理类
                 Method[] methods = i.getMethods();
                 for (Method m : methods) {
                     rpcServiceContext.methodMap.put(m.toString(), m);
