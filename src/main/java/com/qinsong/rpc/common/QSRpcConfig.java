@@ -54,6 +54,9 @@ public class QSRpcConfig implements InitializingBean {
     private Boolean redistribute;
 
 
+    @Value("${spring.application.name:}")
+    private String defname;
+
     @Override
     public void afterPropertiesSet() throws Exception {
         ServerConfig.RPC_CONFIG.getNodeIp();
@@ -73,6 +76,8 @@ public class QSRpcConfig implements InitializingBean {
         if (noNull(nacosSrvname)) ServerConfig.RPC_CONFIG.setNacosServiceName(nacosSrvname);
 
         if (noNull(name)) ServerConfig.RPC_CONFIG.setNodeName(name);
+        else if (noNull(defname)) ServerConfig.RPC_CONFIG.setNodeName(defname);
+        
         if (noNull(ip)) ServerConfig.RPC_CONFIG.setNodeIp(ip);
         if (noNull(port)) ServerConfig.RPC_CONFIG.setNodePort(port);
         if (noNull(action)) ServerConfig.RPC_CONFIG.setNodeAction(action.split(","));
