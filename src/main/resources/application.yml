@@ -4,7 +4,8 @@ server:
 qsrpc:
   nacos:
     addr: 192.168.0.68:8848
-
+  cfg:
+    log: false
   node:
     ip: 127.0.0.1
     port: 10001

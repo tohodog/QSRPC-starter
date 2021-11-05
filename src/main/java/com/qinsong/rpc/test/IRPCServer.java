@@ -1,5 +1,7 @@
 package com.qinsong.rpc.test;
 
+import com.qinsong.rpc.client.RPCFuture;
+
 /**
  * Created by QSong
  * Contact github.com/tohodog
@@ -9,5 +11,7 @@ public interface IRPCServer {
     String hello(String name);
 
     Event event(Event event);
+
+    RPCFuture<Integer> future(Integer name);
 
 }

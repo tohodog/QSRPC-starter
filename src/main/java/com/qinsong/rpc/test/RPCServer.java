@@ -1,5 +1,6 @@
 package com.qinsong.rpc.test;
 
+import com.qinsong.rpc.client.RPCFuture;
 import com.qinsong.rpc.server.QSRpcService;
 
 /**
@@ -18,5 +19,10 @@ public class RPCServer implements IRPCServer {
     @Override
     public Event event(Event event) {
         return event;
+    }
+
+    @Override
+    public RPCFuture<Integer> future(Integer name) {
+        return RPCFuture.Ok(name);
     }
 }
