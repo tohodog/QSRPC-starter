@@ -2,8 +2,10 @@ server:
   port: 8008
 
 qsrpc:
-  nacos:
-    addr: 192.168.0.68:8848
+#  nacos:
+#    addr: 192.168.0.68:8848
+  zk:
+    ips: 192.168.0.68:2181
   cfg:
     log: false
   node:

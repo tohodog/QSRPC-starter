@@ -40,7 +40,6 @@ public class TestController {
             @Override
             public void handleResult(Integer result) {
                 System.err.println("result:" + result);
-
             }
 
             @Override
@@ -61,7 +60,7 @@ public class TestController {
     @GetMapping("/qps2")//异步
     public String qps2() {
         String result = len + "-异步qps:" + runTest2();
-        System.err.println(result);
+        System.out.println(result);
         return result;
     }
 
@@ -88,41 +87,12 @@ public class TestController {
         return len * 1000 / (System.currentTimeMillis() - t);
     }
 
-    private static final int DEFAULT_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
-
-    private final static int count = 12500;//
-    private final static int len = count * DEFAULT_THREAD_POOL_SIZE;//总共请求
-
-    private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE,
-            DEFAULT_THREAD_POOL_SIZE * 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(1024));
-
 
     private long runTest2() {
         long t = System.currentTimeMillis();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final AtomicInteger atomicInteger = new AtomicInteger(0);
-
-
-//        for (int i = 0; i < len; i++) {
-//            RPCFuture<String> future = irpcServer.future("song");
-//            future.setCallback(new Callback<String>() {
-//                @Override
-//                public void handleResult(String result) {
-//                    int i = atomicInteger.incrementAndGet();
-//                    if (i >= len) countDownLatch.countDown();
-//                    if (i % 100 == 0 || i > len - 100) System.out.println("result:" + i);
-//                }
-//
-//                @Override
-//                public void handleError(Throwable error) {
-//                    int i = atomicInteger.incrementAndGet();
-//                    if (i >= len) countDownLatch.countDown();
-//                    System.out.println("error:" + i);
-//                }
-//            });
-//        }
-
 
         for (int i = 0; i < DEFAULT_THREAD_POOL_SIZE; i++) {
             EXECUTOR_SERVICE.submit(new Runnable() {
@@ -136,8 +106,7 @@ public class TestController {
                                 int andGet = result;
                                 if (andGet >= len) countDownLatch.countDown();
                                 if (andGet % 100 == 0 || andGet > len - 100)
-                                    System.out.println("result:" +
-                                            andGet + "/" + atomicInteger.get());
+                                    System.out.println("result:" + andGet + "/" + atomicInteger.get());
                             }
 
                             @Override
@@ -159,4 +128,14 @@ public class TestController {
         }
         return len * 1000 / (System.currentTimeMillis() - t);
     }
+
+
+    private static final int DEFAULT_THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
+
+    private final static int count = 12500;//
+    private final static int len = count * DEFAULT_THREAD_POOL_SIZE;//总共请求
+
+    private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(DEFAULT_THREAD_POOL_SIZE,
+            DEFAULT_THREAD_POOL_SIZE * 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(1024));
+
 }
