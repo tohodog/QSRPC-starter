@@ -4,6 +4,8 @@ import com.qinsong.rpc.common.util.CGlib;
 import com.qinsong.rpc.common.serialize.Request;
 import com.qinsong.rpc.common.serialize.Response;
 import com.qinsong.rpc.common.serialize.ISerialize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.song.qsrpc.send.RPCClientManager;
 import org.song.qsrpc.send.cb.Callback;
 import org.springframework.cglib.proxy.MethodInterceptor;
@@ -21,6 +23,8 @@ import java.util.concurrent.Future;
  * 创建接口代理,实现远程调用
  */
 public class QSRpcPorxy implements MethodInterceptor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(QSRpcPorxy.class);
 
     private Class target; // 代理对象接口
 
@@ -71,13 +75,13 @@ public class QSRpcPorxy implements MethodInterceptor {
 
         Class<?> returnType = method.getReturnType();
         if (RPCFuture.class.isAssignableFrom(returnType)) {
-            Type type = returnType.getGenericSuperclass();
-            if (!(type instanceof ParameterizedType)) {
-                type = String.class;
-            } else {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                type = parameterizedType.getRawType();
-            }
+//            Type type = returnType.getGenericSuperclass();
+//            if (!(type instanceof ParameterizedType)) {
+//                type = String.class;
+//            } else {
+//                ParameterizedType parameterizedType = (ParameterizedType) type;
+//                type = parameterizedType.getRawType();
+//            }
             //异步请求
             final RPCFuture<Object> rpcFuture = new RPCFuture<>();
 
@@ -86,11 +90,11 @@ public class QSRpcPorxy implements MethodInterceptor {
                 public void handleResult(byte[] result) {
                     Response response = iSerialize.deserialize(result, Response.class);
                     if (response.getException() != null) {
-                        response.getException().printStackTrace();
+                        LOGGER.error("RPCFuture.handleError", response.getException());
                         rpcFuture.handleError(response.getException());
-
+                    } else {
+                        rpcFuture.handleResult(response.getResult());
                     }
-                    rpcFuture.handleResult(response.getResult());
                 }
 
                 @Override
@@ -106,7 +110,8 @@ public class QSRpcPorxy implements MethodInterceptor {
             byte[] bytes = RPCClientManager.getInstance().sendSync(action, iSerialize.serialize(request), timeout);
             Response response = iSerialize.deserialize(bytes, Response.class);
             if (response.getException() != null) {
-                response.getException().printStackTrace();
+//                response.getException().printStackTrace();
+                LOGGER.error("Response.exception", response.getException());
                 throw response.getException();
             }
             return response.getResult();
