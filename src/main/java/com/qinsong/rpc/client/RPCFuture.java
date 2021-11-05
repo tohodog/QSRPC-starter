@@ -21,8 +21,8 @@ public class RPCFuture<T> implements Future<T>, Callback<T> {
 
     private final CountDownLatch latch = new CountDownLatch(1);
 
-    private T result = null;
-    private Throwable error = null;
+    private volatile T result = null;
+    private volatile Throwable error = null;
 
     private ISerialize iSerialize;
     private Class<T> type;
@@ -40,12 +40,7 @@ public class RPCFuture<T> implements Future<T>, Callback<T> {
 
     @Override
     public void handleResult(T result) {
-        try {
-            this.result = result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.error = e;
-        }
+        this.result = result;
         this.latch.countDown();
         setCallback(callback);
     }
