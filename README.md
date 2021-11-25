@@ -198,7 +198,7 @@ public String future() {
 ### v0.1.0(2020-11-16)
   * open source
 ## Other
-  * 有问题请Add [issues](https://gitee.com/sakaue/QSRPC-starter/issues)
+  * 有问题请Add [issues](https://github.com/tohodog/QSRPC-starter/issues)
   * 如果项目对你有帮助的话欢迎[star][star]
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
@@ -207,13 +207,13 @@ public String future() {
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-red.svg
-[license]: https://gitee.com/sakaue/QSRPC-starter/raw/master/LICENSE
+[license]: https://github.com/tohodog/QSRPC-starter/raw/master/LICENSE
 
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
-[star]: https://gitee.com/sakaue/QSRPC-starter
+[star]: https://github.com/tohodog/QSRPC-starter
 
 [QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.2.1-blue.svg
-[QSRPC]: https://gitee.com/sakaue/QSRPC
+[QSRPC]: https://github.com/tohodog/QSRPC
 
 [nacossvg]: https://img.shields.io/badge/nacos-2.0.3-2EBBFB.svg
 [nacos]: https://github.com/alibaba/nacos
