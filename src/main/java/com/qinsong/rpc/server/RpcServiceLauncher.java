@@ -1,16 +1,20 @@
 package com.qinsong.rpc.server;
 
 import com.google.common.util.concurrent.RateLimiter;
-import com.qinsong.rpc.common.util.CGlib;
+import com.qinsong.rpc.client.RPCFuture;
 import com.qinsong.rpc.common.EnableQSRpc;
-import com.qinsong.rpc.common.serialize.Request;
-import com.qinsong.rpc.common.serialize.Response;
 import com.qinsong.rpc.common.serialize.ISerialize;
 import com.qinsong.rpc.common.serialize.Protostuff;
+import com.qinsong.rpc.common.serialize.Request;
+import com.qinsong.rpc.common.serialize.Response;
+import com.qinsong.rpc.common.util.CGlib;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.song.qsrpc.discover.NodeInfo;
 import org.song.qsrpc.receiver.MessageListener;
 import org.song.qsrpc.receiver.NodeLauncher;
 import org.song.qsrpc.receiver.NodeRegistry;
+import org.song.qsrpc.send.cb.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +29,8 @@ import java.util.Map;
  */
 @Component
 public class RpcServiceLauncher {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcServiceLauncher.class);
 
     @Autowired(required = false)
     private ISerialize iSerialize;
@@ -68,9 +74,11 @@ public class RpcServiceLauncher {
                     }
                 }
                 try {
-                    return onHandle(message);
+                    return onHandle(async, message);
                 } catch (Throwable e) {
                     e.printStackTrace();
+                    LOGGER.error("onHandle", e);
+
                     //获取业务抛出的异常
                     if (e instanceof InvocationTargetException && e.getCause() != null) e = e.getCause();
 
@@ -94,7 +102,7 @@ public class RpcServiceLauncher {
     }
 
     //处理rpc消息
-    private byte[] onHandle(byte[] message) throws InvocationTargetException {
+    private byte[] onHandle(final MessageListener.Async async, byte[] message) throws InvocationTargetException {
         Request request = iSerialize.deserialize(message, Request.class);
         RpcServiceContext serviceContext = contextMap.get(request.getInterfaceName() + request.getVersion());
         if (serviceContext == null) {
@@ -112,8 +120,36 @@ public class RpcServiceLauncher {
         if (obj == null) {
             return cacheResponse.empty();
         }
-        Response response = new Response();
-        response.setResult(obj);
-        return iSerialize.serialize(response);
+
+        if (obj instanceof RPCFuture) {//异步回调
+            RPCFuture<Object> future = (RPCFuture<Object>) obj;
+            future.setCallback(new Callback<Object>() {
+                @Override
+                public void handleResult(Object result) {
+                    Response response = new Response();
+                    response.setResult(result);
+                    async.callBack(iSerialize.serialize(response));
+                }
+
+                @Override
+                public void handleError(Throwable e) {
+                    e.printStackTrace();
+                    //获取业务抛出的异常
+                    if (e instanceof InvocationTargetException && e.getCause() != null) e = e.getCause();
+
+                    String msg = e.getMessage();
+                    if (msg == null || msg.isEmpty()) msg = e.toString();
+                    Response response = new Response();
+                    //统一返回Exception,防止客户端没有这个错误类,序列化失败
+                    response.setException(new Exception(msg));
+                    async.callBack(iSerialize.serialize(response));
+                }
+            });
+            return null;
+        } else {
+            Response response = new Response();
+            response.setResult(obj);
+            return iSerialize.serialize(response);
+        }
     }
 }

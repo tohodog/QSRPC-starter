@@ -2,17 +2,18 @@
 <br/>
 <br/>
 ---
-一个基于[QSRPC][QSRPC],结合spring-boot实现远程调用的轻量级高性能RPC框架
+一个基于[QSRPC][QSRPC], 结合 spring-boot 实现远程调用的轻量级高性能RPC框架
 <br/>
 
-[![starter][QSRPCstarter-svg]][star] [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
+[![star][QSRPCstarter-svg]][star] [![QSRPC][QSRPCsvg]][QSRPC]  [![License][licensesvg]][license]
 
-  * 使用nacos(2.0)/zookeeper服务发现,自动注册扩展服务
-  * 使用长连接TCP池,netty作为网络IO,支持全双工通信,高性能
-  * 默认使用Protostuff序列化
-  * 支持压缩snappy,gzip
-  * 支持针对整个/单个服务进行qps限制,超时等设置
-  * 支持权重分发消息
+  * 使用 nacos(2.0) / zookeeper 服务发现, 自动注册扩展服务
+  * 使用长连接TCP池, netty 作为网络IO, 支持全双工通信, 高性能
+  * 支持异步调用,提升qps上限
+  * 默认使用 Protostuff 序列化
+  * 支持压缩snappy, gzip
+  * 支持针对整个服务/单个接口进行qps限制, 超时等设置
+  * 支持权重调用服务负载均衡
   * 欢迎学习交流~
 
 ## Maven
@@ -20,7 +21,7 @@
 <dependency>
     <groupId>com.github.tohodog</groupId>
     <artifactId>qsrpc-starter</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!--导入如有问题,可尝试添加jitpack源-->
@@ -47,7 +48,7 @@ qsrpc.nacos.addr=192.168.0.100:8848
 #qsrpc.zk.ips=127.0.0.1:2181
 
 #节点IP
-qsrpc.node.ip=127.0.0.1 (请配置为内(外)网IP,不配置自动获取)
+qsrpc.node.ip=192.168.0.100 (请配置为内(外)网IP,不配置自动获取)
 qsrpc.node.port=19980
 
 #option
@@ -55,7 +56,8 @@ qsrpc.node.port=19980
 #qsrpc.node.weight=1
 #压缩,带宽不足可选
 #qsrpc.node.zip=snappy/gzip
-
+#全局请求超时时间
+#qsrpc.connect.timeout=60000
 ```
 ### 2.SpringBootApplication
 ```
@@ -73,6 +75,7 @@ public class RPCApplication {
 ```
 public interface IRPCServer {
     String hello(String name);
+    RPCFuture<String> future(String name);//异步
 }
 ```
 ### 4.1 server
@@ -84,6 +87,14 @@ public class RPCServer implements IRPCServer {
     public String hello(String name) {
         return "hello:" + name;
     }
+
+    @Override
+    public RPCFuture<String> future(String name) {
+        return RPCFuture.Ok(name);
+        //服务端如需异步处理,可创建RPCFuture rpc=new RPCFuture();
+        //先行返回rpc,后续异步调用rpc.handleResult(t)返回结果
+    }
+
 }
 ```
 ### 4.2 client
@@ -92,26 +103,45 @@ public class RPCServer implements IRPCServer {
 //@QSRpcReference(version = "2.0",timeout = 10000) 配置版本号及超时
 IRPCServer rpcServer;
 
+//同步调用
 @ResponseBody
 @GetMapping("/hello")
 public String hello() {
     return rpcServer.hello("QSPRC");
 }
+
+//异步调用
+@GetMapping("/future")
+public String future() {
+    RPCFuture<String> future = rpcServer.future("QSPRC");
+    future.setCallback(new Callback<String>() {
+        @Override
+         public void handleResult(String result) {
+            System.out.println("result:" + result);
+        }
+       @Override
+        public void handleError(Throwable error) {
+            System.err.println("error:" + error);
+        }
+    });
+    return "ok";
+}
 ```
 
 ## Future
- * 消息发送支持异步(WebFlux)
+ * ~~服务调用支持异步~~
  * 断路器策略
  * 服务统计治理
  * ...
  
 ## Test
- 4-core自发自收的情况下2.3万/秒的并发数,实际会更高 [Test截图][testpng]
+ 4-core自发自收的情况下2.3万/秒的并发数,实际会更高 [Test截图][testpng] [截图2][testpng2]
+ <br/>异步调用可达10w+,可拉取test分支测试
  
- |  CPU   | request  | time  |qps  |
- |  ----  | ----  |----  |----  |
-| i3-8100(4-core/4-thread)| 10w(8-thread) | 4331ms | 23089  |
-| i7-8700(6-core/12-thread) | 30w(24-thread) | 6878ms | 43617  |
+ |  CPU   | request  | time  | qps  | qps(异步) |
+ |  ----  | ----  |----  |----  |----  |
+| i3-8100(4-core/4-thread)| 10w(8-thread) | 4331ms | 23089  | 10w+  |
+| i7-8700(6-core/12-thread) | 30w(24-thread) | 6878ms | 43617  | 20w+  |
 
 
 
@@ -145,13 +175,17 @@ public String hello() {
 <br>
 　客户端Pool的maxIdle(maxActive)=服务节点配置的CPU线程数*2=服务节点netty的工作线程数,pool采用FIFO先行先出的策略,可以保证在高并发下均匀的使用tcp连接,服务端就不用再次分发消息了
 ### 3. 服务注册发现
-　分布式系统中都需要一个配置/服务中心,才能进行统一管理.本框架目前使用zookeeper/nacos进行服务注册,zookeeper是使用类似文件目录的结构,每个目录都可以存一个data
+　分布式系统中都需要一个配置/服务中心,才能进行统一管理.本框架目前使用zookeeper(已支持nacos)进行服务注册,zookeeper是使用类似文件目录的结构,每个目录都可以存一个data
 <br>　节点注册是使用[IP:PROT_TIME]作为目录名,data存了节点的json数据,创建模式为EPHEMERAL_SEQUENTIAL(断开后会删除该目录),这样就达到了自动监听节点上下线的效果,加入时间戳是为了解决当节点快速重启时,注册了两个目录,便于进行区分处理
 <br>　客户端通过watch目录变化信息,从而获取到所有服务节点信息,同步一个副本到本地Map里(需加上读写锁),客户端就可以实现高效调用对应的服务了
 
 
  
 ## Log
+### v1.1.0(2021-11-25)
+  * 支持异步调用,提升框架qps上限
+  * 升级依赖
+  * 其他优化...
 ### v1.0.3(2021-04-16)
   * 支持Nacos 2.0
   * 支持yml,自动获取node ip
@@ -164,23 +198,24 @@ public String hello() {
 ### v0.1.0(2020-11-16)
   * open source
 ## Other
-  * 有问题请Add [issues](https://github.com/tohodog/QSRPC-starter/issues)
-  * 如果项目对你有帮助的话欢迎[![star][starsvg]][star]
+  * 有问题请Add [issues](https://gitee.com/sakaue/QSRPC-starter/issues)
+  * 如果项目对你有帮助的话欢迎[star][star]
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
 [testpng]: https://gitee.com/sakaue/QSRPC-starter/raw/develop/test.png
+[testpng2]: https://gitee.com/sakaue/QSRPC-starter/raw/develop/test2.png
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-red.svg
 [license]: https://gitee.com/sakaue/QSRPC-starter/raw/master/LICENSE
 
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
-[star]: https://github.com/tohodog/QSRPC-starter
+[star]: https://gitee.com/sakaue/QSRPC-starter
 
-[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.2.0-blue.svg
-[QSRPC]: https://github.com/tohodog/QSRPC
+[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.2.1-blue.svg
+[QSRPC]: https://gitee.com/sakaue/QSRPC
 
-[nacossvg]: https://img.shields.io/badge/nacos-2.0.0-2EBBFB.svg
+[nacossvg]: https://img.shields.io/badge/nacos-2.0.3-2EBBFB.svg
 [nacos]: https://github.com/alibaba/nacos
 
-[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.3-origen.svg
+[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.1.0-origen.svg

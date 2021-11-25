@@ -69,7 +69,7 @@ public class ClientStartListener implements ApplicationListener<ContextRefreshed
             if (qsRpcReference != null) {
 
                 Class<?> c = f.getType();
-                if (!c.isInterface()) new IllegalArgumentException(f + " @QSRpcReference 必须注解在一个接口上");
+                if (!c.isInterface()) throw new IllegalArgumentException(f + " @QSRpcReference 必须注解在一个接口上");
                 Object porxy = new QSRpcPorxy(c, qsRpcReference, iSerialize).getPorxy();//创建代理
 
                 f.setAccessible(true);
