@@ -9,10 +9,11 @@
 
   * 使用 nacos(2.0) / zookeeper 服务发现, 自动注册扩展服务
   * 使用长连接TCP池, netty 作为网络IO, 支持全双工通信, 高性能
+  * 支持异步调用,提升qps上限
   * 默认使用 Protostuff 序列化
   * 支持压缩snappy, gzip
   * 支持针对整个服务/单个接口进行qps限制, 超时等设置
-  * 支持权重分发消息
+  * 支持权重调用服务负载均衡
   * 欢迎学习交流~
 
 ## Maven
@@ -20,7 +21,7 @@
 <dependency>
     <groupId>com.github.tohodog</groupId>
     <artifactId>qsrpc-starter</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 </dependency>
 
 <!--导入如有问题,可尝试添加jitpack源-->
@@ -55,7 +56,8 @@ qsrpc.node.port=19980
 #qsrpc.node.weight=1
 #压缩,带宽不足可选
 #qsrpc.node.zip=snappy/gzip
-
+#全局请求超时时间
+#qsrpc.connect.timeout=60000
 ```
 ### 2.SpringBootApplication
 ```
@@ -73,6 +75,7 @@ public class RPCApplication {
 ```
 public interface IRPCServer {
     String hello(String name);
+    RPCFuture<String> future(String name);//异步
 }
 ```
 ### 4.1 server
@@ -84,6 +87,14 @@ public class RPCServer implements IRPCServer {
     public String hello(String name) {
         return "hello:" + name;
     }
+
+    @Override
+    public RPCFuture<String> future(String name) {
+        return RPCFuture.Ok(name);
+        //服务端如需异步处理,可创建RPCFuture rpc=new RPCFuture();
+        //先行返回rpc,后续异步调用rpc.handleResult(t)返回结果
+    }
+
 }
 ```
 ### 4.2 client
@@ -92,26 +103,45 @@ public class RPCServer implements IRPCServer {
 //@QSRpcReference(version = "2.0",timeout = 10000) 配置版本号及超时
 IRPCServer rpcServer;
 
+//同步调用
 @ResponseBody
 @GetMapping("/hello")
 public String hello() {
     return rpcServer.hello("QSPRC");
 }
+
+//异步调用
+@GetMapping("/future")
+public String future() {
+    RPCFuture<String> future = rpcServer.future("QSPRC");
+    future.setCallback(new Callback<String>() {
+        @Override
+         public void handleResult(String result) {
+            System.out.println("result:" + result);
+        }
+       @Override
+        public void handleError(Throwable error) {
+            System.err.println("error:" + error);
+        }
+    });
+    return "ok";
+}
 ```
 
 ## Future
- * 消息发送支持异步(WebFlux)
+ * ~~服务调用支持异步~~
  * 断路器策略
  * 服务统计治理
  * ...
  
 ## Test
- 4-core自发自收的情况下2.3万/秒的并发数,实际会更高 [Test截图][testpng]
+ 4-core自发自收的情况下2.3万/秒的并发数,实际会更高 [Test截图][testpng] [截图2][testpng2]
+ <br/>异步调用可达10w+,可拉取test分支测试
  
- |  CPU   | request  | time  |qps  |
- |  ----  | ----  |----  |----  |
-| i3-8100(4-core/4-thread)| 10w(8-thread) | 4331ms | 23089  |
-| i7-8700(6-core/12-thread) | 30w(24-thread) | 6878ms | 43617  |
+ |  CPU   | request  | time  | qps  | qps(异步) |
+ |  ----  | ----  |----  |----  |----  |
+| i3-8100(4-core/4-thread)| 10w(8-thread) | 4331ms | 23089  | 10w+  |
+| i7-8700(6-core/12-thread) | 30w(24-thread) | 6878ms | 43617  | 20w+  |
 
 
 
@@ -152,6 +182,10 @@ public String hello() {
 
  
 ## Log
+### v1.1.0(2021-11-25)
+  * 支持异步调用,提升框架qps上限
+  * 升级依赖
+  * 其他优化...
 ### v1.0.3(2021-04-16)
   * 支持Nacos 2.0
   * 支持yml,自动获取node ip
@@ -169,6 +203,7 @@ public String hello() {
   
 [logopng]: https://gitee.com/sakaue/QSRPC/raw/master/logo.png
 [testpng]: https://gitee.com/sakaue/QSRPC-starter/raw/develop/test.png
+[testpng2]: https://gitee.com/sakaue/QSRPC-starter/raw/develop/test2.png
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-red.svg
@@ -177,10 +212,10 @@ public String hello() {
 [starsvg]: https://img.shields.io/github/stars/tohodog/QSRPC-starter.svg?style=social&label=Stars
 [star]: https://gitee.com/sakaue/QSRPC-starter
 
-[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.2.0-blue.svg
+[QSRPCsvg]: https://img.shields.io/badge/QSRPC-1.2.1-blue.svg
 [QSRPC]: https://gitee.com/sakaue/QSRPC
 
-[nacossvg]: https://img.shields.io/badge/nacos-2.0.0-2EBBFB.svg
+[nacossvg]: https://img.shields.io/badge/nacos-2.0.3-2EBBFB.svg
 [nacos]: https://github.com/alibaba/nacos
 
-[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.0.3-origen.svg
+[QSRPCstarter-svg]: https://img.shields.io/badge/QSRPC%20starter-1.1.0-origen.svg
