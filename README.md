@@ -21,7 +21,7 @@
 <dependency>
     <groupId>com.github.tohodog</groupId>
     <artifactId>qsrpc-starter</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 
 <!--导入如有问题,可尝试添加jitpack源-->
@@ -182,7 +182,7 @@ public String future() {
 
  
 ## Log
-### v1.1.0(2021-11-25)
+### v1.1.1(2021-11-25)
   * 支持异步调用,提升框架qps上限
   * 升级依赖
   * 其他优化...
