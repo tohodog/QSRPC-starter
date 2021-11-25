@@ -6,7 +6,7 @@
 
     <groupId>com.github.tohodog</groupId>
     <artifactId>qsrpc-starter</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 
     <name>qsrpc-starter</name>
     <description>qsrpc-starter</description>
@@ -14,7 +14,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.qsrpc>1.2.1</version.qsrpc>
+        <version.qsrpc>1.3.0</version.qsrpc>
         <version.protostuff>1.7.2</version.protostuff>
         <version.objenesis>2.1</version.objenesis>
         <version.cglib>3.1</version.cglib>
