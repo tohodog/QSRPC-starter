@@ -2,17 +2,18 @@ package com.qinsong.rpc.server;
 
 import com.google.common.util.concurrent.RateLimiter;
 import com.qinsong.rpc.client.RPCFuture;
-import com.qinsong.rpc.common.util.CGlib;
 import com.qinsong.rpc.common.EnableQSRpc;
-import com.qinsong.rpc.common.serialize.Request;
-import com.qinsong.rpc.common.serialize.Response;
 import com.qinsong.rpc.common.serialize.ISerialize;
 import com.qinsong.rpc.common.serialize.Protostuff;
+import com.qinsong.rpc.common.serialize.Request;
+import com.qinsong.rpc.common.serialize.Response;
+import com.qinsong.rpc.common.util.CGlib;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.song.qsrpc.discover.NodeInfo;
 import org.song.qsrpc.receiver.MessageListener;
 import org.song.qsrpc.receiver.NodeLauncher;
 import org.song.qsrpc.receiver.NodeRegistry;
-import org.song.qsrpc.send.cb.CallFuture;
 import org.song.qsrpc.send.cb.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,8 @@ import java.util.Map;
  */
 @Component
 public class RpcServiceLauncher {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcServiceLauncher.class);
 
     @Autowired(required = false)
     private ISerialize iSerialize;
@@ -74,6 +77,8 @@ public class RpcServiceLauncher {
                     return onHandle(async, message);
                 } catch (Throwable e) {
                     e.printStackTrace();
+                    LOGGER.error("onHandle", e);
+
                     //获取业务抛出的异常
                     if (e instanceof InvocationTargetException && e.getCause() != null) e = e.getCause();
 

@@ -1,9 +1,9 @@
 package com.qinsong.rpc.client;
 
-import com.qinsong.rpc.common.util.CGlib;
+import com.qinsong.rpc.common.serialize.ISerialize;
 import com.qinsong.rpc.common.serialize.Request;
 import com.qinsong.rpc.common.serialize.Response;
-import com.qinsong.rpc.common.serialize.ISerialize;
+import com.qinsong.rpc.common.util.CGlib;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.song.qsrpc.send.RPCClientManager;
@@ -12,9 +12,6 @@ import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.concurrent.Future;
 
 /**
  * Created by QSong
